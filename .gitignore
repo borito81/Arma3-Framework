@@ -1,0 +1,13 @@
+﻿# Windows
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# Editor- und temporäre Dateien
+*.bak
+*.tmp
+*.swp
+*~
+
+# VS Code: lokale Einstellungen
+.vscode/

@@ -1,0 +1,321 @@
+/*
+    Arma 3 Persistenzframework
+    Datei: description.ext
+
+    Zentrale Konfiguration des Persistenzframeworks.
+
+    WICHTIG FÜR MISSIONSBAUER:
+    - Die Framework-Konfiguration muss erhalten bleiben.
+    - Missionsspezifische Einstellungen können in den dafür
+      vorgesehenen Bereichen ergänzt werden.
+    - CfgFunctions und CfgRemoteExec nicht ein zweites Mal
+      als separate Klassen definieren, sondern bestehende
+      Klassen erweitern.
+*/
+
+// ============================================================
+// MISSIONSKONFIGURATION
+// ============================================================
+// Hier später allgemeine missionsspezifische Einstellungen
+// ergänzen, beispielsweise:
+// - Respawn-Konfiguration
+// - KI-Besetzung freier Spielerrollen
+// - missionsspezifische Parameter
+//
+// Beispiele:
+// disabledAI = 0 / 1;
+// corpseManagerMode = 0 / 1;
+//
+// Hinweis:
+// Nicht jede Einstellung gehört in diese Datei. Insbesondere
+// serverweite Schwierigkeitsgrade werden über die entsprechende
+// Serverkonfiguration gesteuert.
+// --> von hier
+
+// Respawn
+respawn = 3;
+respawnTemplates[] = {"MenuPosition", "Tickets" };
+respawnDelay = 15;
+respawnDialog = 0;
+respawnOnStart = -1;
+
+// --> bis hier
+// ============================================================
+// PERSISTENZFRAMEWORK – FUNKTIONSREGISTRIERUNG
+// ============================================================
+// CfgFunctions registriert die SQF-Funktionen des Frameworks.
+//
+// TAG_fnc_<Funktionsname> wird automatisch aus dem Klassennamen
+// unterhalb von TAG erzeugt.
+//
+// Die Dateipfade unter "file" sind relativ zum Missionsverzeichnis.
+// Die Unterverzeichnisse müssen zur tatsächlichen Ordnerstruktur
+// des Frameworks passen.
+//
+// Neue Framework-Funktionen hier ergänzen.
+// Missionsspezifische Funktionen können in eigenen Kategorien
+// registriert werden, sofern die Struktur entsprechend erweitert
+// wird.
+
+class CfgFunctions
+{
+    class TAG
+    {
+        // ----------------------------------------------------
+        // Zentrale Initialisierung und Hilfsfunktionen
+        // ----------------------------------------------------
+        class Core
+        {
+            file = "core";
+
+            class initializeServerPersistence {};
+            class initializePlayerPersistence {};
+            class onPlayerRespawnPersistence {};
+            class onPlayerKilledPersistence {};
+
+            class configurePersistenceDebug {};
+            class debugLog {};
+
+            class configurePersistence {};
+        };
+
+        // ----------------------------------------------------
+        // Speichern und Laden der Kampagnendaten
+        // ----------------------------------------------------
+        class Persistence
+        {
+            file = "persistence";
+
+            class createDefaultSaveData {};
+            class loadCampaign {};
+            class saveCampaign {};
+            class autoSave {};
+        };
+
+        // ----------------------------------------------------
+        // Persistente Ereignisse und Aufgaben
+        // ----------------------------------------------------
+        class Trigger
+        {
+            file = "trigger";
+
+            // Persistente Trigger
+            class registerPersistentTriggers {};
+            class completePersistentTrigger {};
+        };
+
+        class Tasks
+        {
+            file = "tasks";
+            
+            // Task-Verwaltung und Wiederherstellung
+            class reportTaskState {};
+            class trackTaskStates {};
+            class restoreTaskStates {};
+            class registerTaskDefinition {};
+            // class getTaskOwnerGroup {};
+            class syncTaskRegistry {};
+            class registerTaskDefinitions {};
+        };
+
+        class Diary
+        {
+            file = "diary";
+
+            // Diary Verwaltung und Wiederherstellung
+            class SaveDiaryEntries {};
+            class CollectDiaryEntries {};
+            class ReportDiaryEntries {};
+            class ApplyDiaryEntries {};
+            class RequestRestoreDiaryEntries {};
+            class ConfirmDiaryRestore {};
+        };
+
+        // ----------------------------------------------------
+        // Weltzustände: Gruppen, Fahrzeuge, Tickets und Marker
+        // ----------------------------------------------------
+        class World
+        {
+            file = "world";
+
+            // Respawn-Tickets
+            class saveRespawnTickets {};
+            class restoreRespawnTickets {};
+
+            // Kartenmarker
+            class saveMarkerStates {};
+            class restoreMarkerStates {};
+        };
+
+        class Vehicles
+        {
+            file = "vehicles";
+            
+            // Fahrzeuge
+            class registerVehicles {};
+            class trackDestroyedVehicles {};
+            class trackVehicleStates {};
+            class saveVehicleStates {};
+            class applyVehicleStates {};
+            class restoreDynamicVehicles {};
+            class restoreDynamicVehicleCrew {};
+            class applyDestroyedVehicles {};
+        };
+
+        class Groups
+        {
+            file = "groups";
+
+            // Gruppen
+            class registerGroups {};
+            class saveDynamicGroups {};
+            class restoreDynamicGroups {};
+            class trackDestroyedGroups {};
+            class applyDestroyedGroups {};
+        };
+
+        // ----------------------------------------------------
+        // Persistente Spielerrollen
+        // ----------------------------------------------------
+        class Players
+        {
+            file = "players";
+
+            class registerPlayers {};
+            class requestRestorePlayer {};
+            class restorePlayer {};
+            class savePlayers {};
+            class savePlayerDeathLoadout {};
+        };
+
+        // ----------------------------------------------------
+        // Persistente Spielerfahrzeuge
+        // ----------------------------------------------------
+        class PlayerVehicles
+        {
+            file = "playerVehicles";
+
+            class registerPlayerVehicles {};
+            class savePlayerVehicles {};
+            class restorePlayerVehicles {};
+        };
+    };
+};
+
+
+// ============================================================
+// PERSISTENZFRAMEWORK – REMOTE-EXEC-FREIGABEN
+// ============================================================
+// CfgRemoteExec legt fest, welche Funktionen über remoteExec
+// bzw. remoteExecCall aufgerufen werden dürfen.
+//
+// mode = 1:
+// Nur ausdrücklich freigegebene Funktionen sind erlaubt.
+//
+// jip = 0:
+// Diese Konfiguration aktiviert keine allgemeine JIP-Ausführung.
+//
+// allowedTargets:
+// 1 = Clients
+// 2 = Server
+// 0 = alle Maschinen
+//
+// WICHTIG:
+// - Bestehende Freigaben nicht versehentlich entfernen.
+// - Neue Remote-Aufrufe nur bei tatsächlichem Bedarf ergänzen.
+// - Die Zielmaschine muss zur Verwendung der jeweiligen
+//   Funktion passen.
+// - Missionsspezifische Remote-Exec-Freigaben müssen in diese
+//   bestehende Klasse integriert werden.
+
+class CfgRemoteExec
+{
+    class Functions
+    {
+        mode = 1;
+        jip = 0;
+
+        // Spielerzustand auf dem Client wiederherstellen
+        class TAG_fnc_restorePlayer
+        {
+            allowedTargets = 1;
+        };
+
+        // Wiederherstellung beim Server anfordern
+        class TAG_fnc_requestRestorePlayer
+        {
+            allowedTargets = 2;
+        };
+
+        // Death-Loadout an den Server übermitteln
+        class TAG_fnc_savePlayerDeathLoadout
+        {
+            allowedTargets = 2;
+        };
+
+        // Task-Zustand an den Server melden
+        class TAG_fnc_reportTaskState
+        {
+            allowedTargets = 2;
+        };
+
+        // Respawn-Tickets an den Server übermitteln
+        class TAG_fnc_saveRespawnTickets
+        {
+            allowedTargets = 2;
+        };
+        // Diary Einträge an den Server übermitteln
+        class TAG_fnc_collectDiaryEntries
+        {
+            allowedTargets = 1;
+        };
+
+        class TAG_fnc_reportDiaryEntries
+        {
+            allowedTargets = 2;
+        };
+
+        class TAG_fnc_applyDiaryEntries
+        {
+            allowedTargets = 1;
+        };
+
+        class TAG_fnc_requestRestoreDiaryEntries
+        {
+            allowedTargets = 2;
+        };
+        class TAG_fnc_confirmDiaryRestore
+        {
+            allowedTargets = 2;
+        };
+
+        // ----------------------------------------------------
+        // MISSIONSPEZIFISCHE REMOTE-EXEC-FREIGABEN
+        // ----------------------------------------------------
+        // Hier zusätzliche missionsspezifische Funktionen
+        // ergänzen, falls sie tatsächlich remote ausgeführt
+        // werden müssen.
+        //
+        // Beispiel:
+        //
+        // class TAG_fnc_exampleMissionFunction
+        // {
+        //     allowedTargets = 2;
+        // };
+    };
+    class Commands
+    {
+        mode = 1;
+        jip = 0;
+
+        class createDiarySubject
+        {
+            allowedTargets = 0;
+        };
+
+        class createDiaryRecord
+        {
+            allowedTargets = 0;
+        };
+    };
+};
