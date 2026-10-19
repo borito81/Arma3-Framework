@@ -29,6 +29,24 @@ Diese Datei hält stabile Regeln für Änderungen am Arma-3-SQF-Persistenzframew
 - Beschreibe Verifikation präzise: Statische Codeprüfung ist keine Ausführung; eine Skriptausführung ist kein In-Game-Test. Behaupte nicht, Code sei getestet worden, wenn lediglich eine statische Analyse erfolgt ist.
 - Prüfe vor einer Änderung, welche Verifikationsmöglichkeiten im Repository tatsächlich vorhanden sind. Erfinde keine Testinfrastruktur oder Projektregeln, wenn sie nicht belegt sind.
 
+## Technische Quellen und Belege
+
+Wähle technische Dokumentation passend zur Frage:
+
+- Für Verhalten der Arma-3-Engine, SQF-Befehle und Syntax, Event-Handler, Multiplayer-Verhalten und Initialisierungsreihenfolgen ist die offizielle [Bohemia Interactive Community Wiki](https://community.bistudio.com/wiki/) die bevorzugte Quelle.
+- Für ACE3-Funktionen, ACE-spezifisches Verhalten und öffentliche Schnittstellen ist die offizielle [ACE3-Dokumentation](https://ace3.acemod.org/wiki/) die bevorzugte Quelle.
+- Für CBA_A3-Funktionen, Extended Event Handlers, CBA-Events, Makros und andere CBA-Schnittstellen sind das [CBA_A3 Wiki](https://github.com/CBATeam/CBA_A3/wiki) und die [CBA_A3 Funktionsdokumentation](https://cbateam.github.io/CBA_A3/docs/files/overview-txt.html) die bevorzugten Quellen.
+
+Bei der Verwendung technischer Dokumentation gelten diese Regeln:
+
+- Nutze die Quelle, die zur konkreten technischen Frage passt. Öffne bei Bedarf die konkrete Seite zur verwendeten Funktion oder zum Befehl; stütze dich nicht allein auf eine Startseite oder Suchergebnis-Auszüge.
+- Berücksichtige mögliche Unterschiede zwischen der dokumentierten und der im Projekt verwendeten Version. Behaupte nicht, dass ein beschriebenes Verhalten für die Projektversion gilt, wenn das nicht ausreichend belegt ist.
+- Dokumentation belegt technisches Verhalten, aber nicht die korrekte Verwendung durch dieses Framework. Prüfe dafür weiterhin den tatsächlichen Projektcode einschließlich Aufrufern, Registrierungen, Konfigurationen und Ausführungsumgebung.
+- Wenn Projektcode und Dokumentation scheinbar widersprechen, untersuche den Unterschied und benenne ihn ausdrücklich. Rate nicht, welche Erklärung zutrifft.
+- Foren, Reddit, fremde Projekte und andere Community-Beiträge sind nur ergänzende Quellen, falls die bevorzugte Dokumentation die Frage nicht ausreichend beantwortet. Kennzeichne solche Hinweise als nicht offiziell und übertrage sie nicht ungeprüft auf das Framework.
+- Ist eine relevante Dokumentationsseite nicht erreichbar oder enthält sie keine eindeutige Aussage, sage das ausdrücklich, statt Inhalte zu erfinden.
+- Trenne nachvollziehbar belegte Feststellungen von Schlussfolgerungen und offenen Fragen. Behaupte keine Ausführung oder Tests, die nicht tatsächlich stattgefunden haben.
+
 ## Umfang und offene Entscheidungen
 
 - Ändere keine bestehenden Funktionen, Dateien oder Speicherstrukturen allein zur Verbesserung der Dokumentation. Bei einer reinen Dokumentationsaufgabe bearbeite nur die dafür angeforderten Dokumentationsdateien.
