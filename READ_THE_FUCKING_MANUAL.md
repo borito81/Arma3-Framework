@@ -1,4 +1,5 @@
 # Arma 3 Persistenzframework – README für Missionsbauer
+Test 2
 
 **Projekt:** Stratis_Persistenz  
 **Zielgruppe:** Missionsbauer, Missionsentwickler und Framework-Entwickler  
