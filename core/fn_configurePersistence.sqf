@@ -3,12 +3,19 @@
     Author: Djinn
 
     Description:
-    Zentrale Konfiguration des Persistenzframeworks.
+    Zentrale Konfiguration des Persistenzframeworks einschließlich
+    Autosave- und Fahrzeugzustandsintervallen in Sekunden.
 
     Ausführung: Server
 */
 
 // =====================================================
+// Zentrale Speicherintervalle
+// =====================================================
+
+TAG_AutoSaveInterval = 300;
+TAG_VehicleStateInterval = 60;
+
 // Diary-Persistenz
 // =====================================================
 
@@ -24,6 +31,8 @@ TAG_DiaryPrefixAll    = "ALL:";
 {
     publicVariable _x;
 } forEach [
+    "TAG_AutoSaveInterval",
+    "TAG_VehicleStateInterval",
     "TAG_DiaryPrefixPlayer",
     "TAG_DiaryPrefixGroup",
     "TAG_DiaryPrefixSide",

@@ -1,7 +1,7 @@
 /*
     Author: Djinn
     Description: Regelmäßige automatische Speicherung der
-                 Spieler- und Fahrzeugzustände.
+                 Spieler- und Kampagnenzustände.
 */
 
 if (!isServer) exitWith {};
@@ -39,9 +39,6 @@ while {isServer} do {
     
     // Zustände dynamischer Gruppen speichern
     [] call TAG_fnc_saveDynamicGroups;
-
-    // Zustände registrierter Fahrzeuge speichern.
-    [] call TAG_fnc_saveVehicleStates;
 
     // Respawn Tickets speichern
     [] call TAG_fnc_saveRespawnTickets;

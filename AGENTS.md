@@ -9,6 +9,17 @@ Diese Datei hält stabile Regeln für Änderungen am Arma-3-SQF-Persistenzframew
 - Bewahre die Zuständigkeit von Server und lokalen Clients sowie die vorhandene Reihenfolge von Registrierung, Wiederherstellung und Freigabe. Wenn eine dafür wichtige Architekturentscheidung aus Code und Handbuch nicht eindeutig hervorgeht, frage nach, bevor du sie festlegst.
 - Bevorzuge robuste, allgemeingültige und wartbare SQF-Lösungen. Führe keine unnötig fest codierten Werte oder unbelegten Annahmen ein.
 
+### Alternative Lösungen und technische Vereinfachungen
+
+- Prüfe bei Analysen und geplanten Änderungen neben der bestehenden Implementierung, ob eine einfachere, robustere, performantere oder besser wartbare Lösung möglich ist.
+- Berücksichtige dafür bei Bedarf native Arma-3-/SQF-Funktionen sowie geeignete Funktionen und Schnittstellen aus CBA_A3 und ACE3. Prüfe dazu die jeweils passende offizielle Dokumentation im Abschnitt „Technische Quellen und Belege“.
+- Betrachte Alternativen insbesondere dann, wenn sie unnötige Komplexität, wiederholte Eigenimplementierungen, Polling-Schleifen, redundante Zustandsverwaltung oder schwer wartbare Sonderfälle vermeiden könnten.
+- Bevorzuge nicht automatisch die kürzere Implementierung. Berücksichtige Lesbarkeit, Multiplayer-Verhalten, Server- und Client-Ausführung, JIP, Performance, Abhängigkeiten, Kompatibilität und Wartbarkeit.
+- Erkläre bei relevanten Alternativen die Unterschiede zur bestehenden Lösung, konkrete Vorteile, mögliche Nachteile und zusätzliche Abhängigkeiten.
+- Unterscheide zwischen nachweislich geeigneten Alternativen und Ideen, deren Eignung noch durch Tests oder weitere Prüfung bestätigt werden muss.
+- Ändere keine bestehende Architektur, Schnittstelle, SaveData-Struktur oder dokumentierte Projektentscheidung allein deshalb, weil eine Alternative existiert. Stelle solche Vorschläge zunächst zur Entscheidung vor.
+- Bleibe beim eigentlichen Auftrag und nenne nur Alternativen mit nachvollziehbarem Nutzen für das untersuchte Problem. Erzwinge keine Verbesserungsvorschläge, wenn die bestehende Lösung angemessen ist.
+
 ## Identitäten und getrennte Systeme
 
 - Gruppenidentitäten müssen die Seite berücksichtigen: Arma kann Gruppennamen auf verschiedenen Seiten wiederverwenden. Ältere Fraktionspräfixe für Gruppen dürfen nicht als allgemeine Voraussetzung für deren Registrierung angenommen werden.

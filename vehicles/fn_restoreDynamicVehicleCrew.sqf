@@ -7,8 +7,8 @@
 
     Voraussetzungen:
     - Dynamische Gruppen und Einheiten wurden wiederhergestellt.
-    - Dynamische Fahrzeuge wurden wiederhergestellt.
-    - Fahrzeugzustände und zerstörte Fahrzeuge wurden angewendet.
+    - Dynamische Fahrzeuge wurden wiederhergestellt und registriert.
+    - TAG_SaveData und TAG_PersistentVehicles sind initialisiert.
 
     Verhalten:
     - Einheiten werden anhand ihrer TAG_DynamicUnitUID gefunden.

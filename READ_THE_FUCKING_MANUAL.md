@@ -98,12 +98,12 @@ Die aktuelle Implementierung legt folgende Einstellungen fest:
 
 | Variable | Aktueller Wert | Bedeutung |
 |---|---:|---|
-| `TAG_AutoSaveInterval` | 30 Sekunden | Intervall für automatische Speicherungen |
+| `TAG_AutoSaveInterval` | 300 Sekunden | Intervall für automatische Speicherungen |
 | `TAG_VehicleStateInterval` | 60 Sekunden | Intervall für die laufende Erfassung von Fahrzeugzuständen |
 | `TAG_SaveLoadoutOnDeath` | `true` | Spieler-Loadout beim Tod speichern |
 | `TAG_RestoreLoadoutOnRespawn` | `true` | Gespeichertes Loadout beim Respawn wiederherstellen |
 
-Die Loadout-Einstellungen werden über `publicVariable` veröffentlicht. Debug-Konfiguration und allgemeine Framework-Einstellungen werden anschließend geladen.
+Die Loadout-Einstellungen werden über `publicVariable` veröffentlicht. `TAG_fnc_configurePersistence` setzt und veröffentlicht anschließend die beiden Speicherintervalle sowie die Diary-Präfixe.
 
 ### 3.2 Kampagnendaten und Tickets
 
@@ -131,9 +131,10 @@ Der aktuelle Ablauf umfasst:
 4. Zerstörte Gruppen berücksichtigen.
 5. Dynamische Gruppen wiederherstellen.
 6. Fehlende dynamische Fahrzeuge erzeugen und registrieren.
-7. Gespeicherte Besatzungszuordnungen dynamischer Fahrzeuge wiederherstellen.
-8. Zerstörte Fahrzeuge und gespeicherte Fahrzeugzustände anwenden.
-9. Spielerfahrzeuge und Kartenmarker wiederherstellen.
+7. Zerstörte Fahrzeuge anwenden
+8. Gespeicherte Besatzungszuordnungen dynamischer Fahrzeuge wiederherstellen.
+9. Gespeicherte Zustände intakter Fahrzeuge anwenden.
+10. Spielerfahrzeuge und Kartenmarker wiederherstellen.
 
 Die Reihenfolge ist relevant, da spätere Schritte bereits vorhandene Laufzeitobjekte und registrierte IDs voraussetzen können.
 
@@ -221,7 +222,7 @@ Das Intervall wird aus der Missionsvariable `TAG_AutoSaveInterval` gelesen. Ist 
 
 Werte unter einer Sekunde werden abgelehnt; in diesem Fall bricht der Autosave mit einer Fehlermeldung ab.
 
-Bei der regulären Initialisierung des Frameworks wird `TAG_AutoSaveInterval` aktuell auf 30 Sekunden gesetzt. Solange dieser Wert nicht anschließend geändert wird, verwendet der Autosave daher ein Intervall von 30 Sekunden.
+Bei der regulären Initialisierung setzt `TAG_fnc_configurePersistence` `TAG_AutoSaveInterval` auf 300 Sekunden und veröffentlicht den Wert an die Clients.
 
 Der erste reguläre Autosave-Zyklus beginnt nach Ablauf des Intervalls, da die Funktion vor der Ausführung des ersten Speicherzyklus wartet.
 
@@ -232,13 +233,10 @@ Der aktuelle Autosave ruft die Speicherfunktionen in folgender Reihenfolge auf:
 1. `TAG_fnc_savePlayers` – aktuelle Zustände besetzter Spielerrollen speichern.
 2. `TAG_fnc_savePlayerVehicles` – Zustände persistenter Spielerfahrzeuge speichern.
 3. `TAG_fnc_saveDynamicGroups` – Zustände dynamischer Gruppen einschließlich ihrer Einheiten und Wegpunkte speichern.
-4. `TAG_fnc_saveVehicleStates` – Zustände registrierter normaler Weltfahrzeuge speichern.
-5. `TAG_fnc_saveRespawnTickets` – Respawn-Ticketstände erfassen.
-6. `TAG_fnc_saveMarkerStates` – persistente Markerzustände speichern.
-7. `TAG_fnc_saveDiaryEntries` – Diary-Einträge asynchron erfassen und speichern.
-8. `TAG_fnc_saveCampaign` – den zentralen Kampagnenspielstand abschließend sichern.
-
-Die Reihenfolge berücksichtigt unter anderem, dass dynamische Gruppen ihre Einheitenkennungen bereitstellen, die bei der Speicherung der dynamischen Fahrzeugbesatzungen verwendet werden.
+4. `TAG_fnc_saveRespawnTickets` – Respawn-Ticketstände erfassen.
+5. `TAG_fnc_saveMarkerStates` – persistente Markerzustände speichern.
+6. `TAG_fnc_saveDiaryEntries` – Diary-Einträge asynchron erfassen und speichern.
+7. `TAG_fnc_saveCampaign` – den zentralen Kampagnenspielstand abschließend sichern.
 
 Der Diary-Speichervorgang wird mit `spawn` gestartet und läuft deshalb unabhängig vom restlichen Autosave-Zyklus. Die Diary-Funktion führt nach ihrer eigenen Verarbeitung ebenfalls eine Kampagnenspeicherung aus.
 
@@ -248,7 +246,7 @@ Die Initialisierung startet zusätzlich `TAG_fnc_trackVehicleStates`. Diese Funk
 
 Bei der aktuellen Konfiguration beträgt dieses Intervall 60 Sekunden. Damit können Fahrzeugzustände zwischen zwei regulären Autosave-Zyklen aktualisiert werden.
 
-Die laufende Zustandserfassung ersetzt nicht die zentrale Kampagnenspeicherung. Sie ergänzt die regelmäßige Erfassung von Fahrzeugzuständen um einen eigenen Ablauf.
+Der Tracker ruft `TAG_fnc_saveVehicleStates` sofort beim Start und danach alle 60 Sekunden auf. Diese Funktion aktualisiert die Fahrzeugdaten und speichert selbst den Kampagnenspielstand. Der Autosave-Zyklus erfasst normale Weltfahrzeuge nicht erneut.
 
 ## 6. Gruppenpersistenz
 
@@ -1215,16 +1213,18 @@ Die Debug-Ausgabe ersetzt nicht die regulären Fehler- und Warnmeldungen. Direkt
 
 ### 15.4 Zentrale Diary-Konfiguration
 
-Die Funktion `TAG_fnc_configurePersistence` setzt die zentralen Präfixe für die Zuordnung von Diary-Einträgen.
+Die Funktion `TAG_fnc_configurePersistence` setzt die zentralen Autosave- und Fahrzeugzustandsintervalle sowie die Präfixe für die Zuordnung von Diary-Einträgen.
 
 | Konfigurationsvariable | Standardwert | Geltungsbereich |
 |---|---|---|
+| `TAG_AutoSaveInterval` | 300 Sekunden | Allgemeiner Autosave |
+| `TAG_VehicleStateInterval` | 60 Sekunden | Erfassung und Speicherung normaler Fahrzeugzustände |
 | `TAG_DiaryPrefixPlayer` | `PLAY:` | Einzelner Spieler |
 | `TAG_DiaryPrefixGroup` | `GRP:` | Gruppe |
 | `TAG_DiaryPrefixSide` | `SIDE:` | Seite |
 | `TAG_DiaryPrefixAll` | `ALL:` | Alle Spieler |
 
-Die Präfixe werden zentral auf dem Server definiert und anschließend mit `publicVariable` an die Clients verteilt.
+Die Intervalle und Präfixe werden zentral auf dem Server definiert und anschließend mit `publicVariable` an die Clients verteilt.
 
 Sie werden bei der Erfassung und Validierung der Diary-Einträge verwendet, um deren vorgesehenen Geltungsbereich anhand des Eintragstitels zu erkennen.
 
@@ -1236,7 +1236,9 @@ Die Standardwerte sollten mit den Präfixen übereinstimmen, die bei der Erstell
 |---|---|
 | `TAG_fnc_configurePersistenceDebug` | Initialisiert und veröffentlicht die Debug-Einstellungen |
 | `TAG_fnc_debugLog` | Einheitliche, schaltbare Debug-Ausgabe |
-| `TAG_fnc_configurePersistence` | Definiert und veröffentlicht die Diary-Präfixe |
+| `TAG_fnc_configurePersistence` | Definiert und veröffentlicht Speicherintervalle und Diary-Präfixe |
+| `TAG_AutoSaveInterval` | Intervall des allgemeinen Autosaves in Sekunden |
+| `TAG_VehicleStateInterval` | Intervall der Fahrzeugzustandserfassung in Sekunden |
 | `TAG_DebugPersistence` | Globale Debug-Einstellung |
 | `TAG_Debug_<Funktionsname>` | Funktionsbezogene Debug-Einstellung |
 | `TAG_DiaryPrefixPlayer` | Präfix für spielerspezifische Diary-Einträge |

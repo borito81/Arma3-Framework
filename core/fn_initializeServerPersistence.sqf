@@ -25,13 +25,6 @@ TAG_PersistenceReady = false;
 // 1. Grundeinstellungen
 // =================================================================================================
 
-// Intervall für automatische Speicherungen in Sekunden.
-TAG_AutoSaveInterval = 30;
-
-// Intervall für die Erfassung des Zustands persistenter Fahrzeuge in Sekunden.
-TAG_VehicleStateInterval = 60;
-
-
 // -------------------------------------------------------------------------------------------------
 // Spieler-Loadouts
 // -------------------------------------------------------------------------------------------------
@@ -136,9 +129,8 @@ private _savedTickets = TAG_SaveData getOrDefault [
 [] call TAG_fnc_applyDestroyedGroups;
 [] call TAG_fnc_restoreDynamicGroups;
 
-// Dynamische Fahrzeuge erstellen und Zustände anwenden
+// Dynamische Fahrzeuge erstellen
 [] call TAG_fnc_restoreDynamicVehicles;
-[] call TAG_fnc_applyVehicleStates;
 
 // Zerstörte Fahrzeuge als Wracks wiederherstellen
 [] call TAG_fnc_applyDestroyedVehicles;
